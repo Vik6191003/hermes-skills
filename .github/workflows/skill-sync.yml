@@ -1,0 +1,28 @@
+name: Skill Sync
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 */6 * * *"  # Every 6 hours
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout skills repo
+        uses: actions/checkout@v4
+        with:
+          repository: Vik6191003/hermes-skills
+          path: hermes-skills
+
+      - name: List skills
+        run: |
+          echo "Active skills:"
+          for dir in hermes-skills/*/; do
+            if [ -f "${dir}SKILL.md" ]; then
+              echo "  - $(basename "$dir")"
+            fi
+          done
+          echo ""
+          echo "Total: $(find hermes-skills -name 'SKILL.md' | wc -l) skills"
